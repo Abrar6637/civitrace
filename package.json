@@ -1,0 +1,9 @@
+{
+  "name": "civitrace",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev:admin": "pnpm --filter @civitrace/admin-web dev",
+    "build:admin": "pnpm --filter @civitrace/admin-web build"
+  }
+}
