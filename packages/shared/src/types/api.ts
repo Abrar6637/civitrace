@@ -297,3 +297,10 @@ export type ReportSummary = {
     averageCondition?: number;
   };
 };
+
+// What the server returns after a citizen signs in
+export type CitizenSession = {
+  token: string;
+  user: User;
+  profileComplete: boolean;
+};

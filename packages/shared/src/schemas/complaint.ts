@@ -6,6 +6,7 @@ import {
   REJECTION_REASONS,
 } from '../constants/complaint';
 import { VERIFICATION_STATES } from '../constants/verification';
+import { EVIDENCE_LIMITS } from '../constants/file';
 import { geoPointSchema, locationRefSchema } from './location';
 
 export const complaintSchema = z.object({
@@ -90,3 +91,51 @@ export const unmergeInputSchema = z.object({
 
 export type MergeInput = z.infer<typeof mergeInputSchema>;
 export type UnmergeInput = z.infer<typeof unmergeInputSchema>;
+
+// ---------- Citizen submission ----------
+
+export const DESCRIPTION_MIN_CHARS = 10;
+export const VOICE_NOTE_MAX_SECONDS = 60;
+
+export const evidenceInputSchema = z.object({
+  fileId: z.string().min(1),
+  kind: z.enum(['photo', 'video']),
+  capturedAt: z.string(),
+  durationSec: z.number().positive().optional(),
+  source: z.literal('live_camera'), // gallery uploads are never accepted
+});
+
+export const complaintSubmitInputSchema = z
+  .object({
+    clientDraftId: z.string().min(1), // the same draft never creates two complaints
+    category: z.enum(COMPLAINT_CATEGORIES),
+    description: z.string().trim().max(1000).optional(),
+    voiceNoteFileId: z.string().optional(),
+    location: locationRefSchema,
+    point: geoPointSchema.optional(),
+    lowConfidenceGps: z.boolean(),
+    isHazard: z.boolean(),
+    notifyMna: z.boolean(),
+    notifyMpa: z.boolean(),
+    evidence: z.array(evidenceInputSchema).min(EVIDENCE_LIMITS.minItems, 'Add at least one live photo or video'),
+  })
+  .superRefine((v, ctx) => {
+    const photos = v.evidence.filter((e) => e.kind === 'photo').length;
+    const videos = v.evidence.filter((e) => e.kind === 'video').length;
+    if (photos > EVIDENCE_LIMITS.maxPhotos) {
+      ctx.addIssue({ code: 'custom', path: ['evidence'], message: `Up to ${EVIDENCE_LIMITS.maxPhotos} photos` });
+    }
+    if (videos > EVIDENCE_LIMITS.maxVideos) {
+      ctx.addIssue({ code: 'custom', path: ['evidence'], message: `Up to ${EVIDENCE_LIMITS.maxVideos} video` });
+    }
+    if ((v.description?.length ?? 0) < DESCRIPTION_MIN_CHARS && !v.voiceNoteFileId) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['description'],
+        message: `Describe the problem in at least ${DESCRIPTION_MIN_CHARS} characters, or record a voice note`,
+      });
+    }
+  });
+
+export type EvidenceInput = z.infer<typeof evidenceInputSchema>;
+export type ComplaintSubmitInput = z.infer<typeof complaintSubmitInputSchema>;

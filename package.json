@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "dev:admin": "pnpm --filter @civitrace/admin-web dev",
-    "build:admin": "pnpm --filter @civitrace/admin-web build"
+    "build:admin": "pnpm --filter @civitrace/admin-web build",
+    "dev:mobile": "pnpm --filter @civitrace/mobile start"
   }
 }

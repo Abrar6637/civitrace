@@ -23,3 +23,6 @@ export * from './utils/duplicates';
 export * from './constants/feedback';
 export * from './schemas/feedback';
 export * from './utils/feedback';
+export * from './utils/phone';
+export * from './schemas/citizen-auth';
+export * from './schemas/evidence';

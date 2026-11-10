@@ -1,4 +1,5 @@
 import { authHandlers } from './auth';
+import { evidenceHandlers } from './evidence';
 import { complaintHandlers } from './complaints';
 import { dashboardHandlers } from './dashboard';
 import { assetHandlers } from './assets';
@@ -14,6 +15,7 @@ import { reportHandlers } from './reports';
 
 export const handlers = [
   ...authHandlers,
+  ...evidenceHandlers,
   ...complaintHandlers,
   ...dashboardHandlers,
   ...assetHandlers,

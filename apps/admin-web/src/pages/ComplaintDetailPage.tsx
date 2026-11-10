@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { AssetLinkPanel } from '@/features/complaints/AssetLinkPanel';
 import { DuplicatesPanel } from '@/features/complaints/DuplicatesPanel';
+import { EvidenceCard } from '@/features/complaints/EvidenceCard';
 
 import { AlertTriangle, ArrowLeft, MapPinOff, Phone, ThumbsUp } from 'lucide-react';
 import {
@@ -131,6 +132,7 @@ export default function ComplaintDetailPage() {
                     <Card title="Description">
                         <p className="text-sm leading-relaxed text-slate-700">{c.description}</p>
                     </Card>
+                              <EvidenceCard complaintId={c.id} />
 
                     <Card title="Location">
                         <div className="space-y-5">
